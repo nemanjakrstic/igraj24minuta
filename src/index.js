@@ -1,15 +1,14 @@
-import Phaser from 'phaser';
-import MainScene from './scenes/MainScene';
 import SplashScene from './scenes/SplashScene';
-import config from './config';
+import Phaser from 'phaser';
 
 const game = new Phaser.Game({
-    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    type: Phaser.CANVAS,
     parent: 'game',
     physics: { default: 'arcade' },
-    scene: [SplashScene, MainScene],
     pixelArt: true,
-    ...config,
+    scene: [SplashScene],
 });
 
 export default game;
