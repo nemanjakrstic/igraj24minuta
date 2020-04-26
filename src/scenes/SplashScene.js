@@ -19,18 +19,18 @@ class SplashScene extends Phaser.Scene {
         this.background.setScale(3);
         this.background.setOrigin(0, 0);
 
-        this.city = this.add.tileSprite(0, 0, this.game.config.width, 140, 'city');
+        this.city = this.add.tileSprite(0, 0, this.game.config.width, this.game.config.height, 'city');
         this.city.setOrigin(0, 1);
         this.city.x = 0;
         this.city.y = this.game.config.height;
-        this.city.setScale(2.5);
+        // this.city.setScale(2.5);
 
         this.logo = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'logo');
         this.logo.setScale(4.5);
     }
 
     update() {
-        this.city.tilePositionX += 0.5;
+        this.city.tilePositionX += 0.25;
     }
 }
 

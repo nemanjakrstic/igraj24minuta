@@ -11,21 +11,16 @@
         <title>One Man</title>
 
         <style>
-            html,
             body {
                 margin: 0;
-            }
-
-            body {
-                height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
                 background-color: black;
+                overflow: hidden;
             }
 
-            #game {
-                border: 1px solid gray;
+            #game canvas {
+                width: 100vw;
+                height: 100vh;
+                object-fit: contain;
             }
         </style>
     </head>
