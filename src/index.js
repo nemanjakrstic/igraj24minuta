@@ -1,3 +1,4 @@
+import LoaderScene from './scenes/LoaderScene';
 import SplashScene from './scenes/SplashScene';
 import Phaser from 'phaser';
 
@@ -8,7 +9,7 @@ const game = new Phaser.Game({
     parent: 'game',
     physics: { default: 'arcade' },
     pixelArt: true,
-    scene: [SplashScene],
+    scene: [LoaderScene, SplashScene],
 });
 
 export default game;

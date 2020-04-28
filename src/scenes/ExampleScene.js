@@ -10,12 +10,13 @@ import powerUp from '../images/spritesheets/power-up.png';
 import player from '../images/spritesheets/player.png';
 import beam from '../images/spritesheets/beam.png';
 
-class MainScene extends Phaser.Scene {
+class ExampleScene extends Phaser.Scene {
     constructor() {
-        super('MainScene');
+        super('ExampleScene');
     }
 
     preload() {
+        console.log('main preload');
         this.load.image('background', background);
         this.load.spritesheet('ship', ship, { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('ship2', ship2, { frameWidth: 32, frameHeight: 16 });
@@ -223,4 +224,4 @@ class MainScene extends Phaser.Scene {
     }
 }
 
-export default MainScene;
+export default ExampleScene;
