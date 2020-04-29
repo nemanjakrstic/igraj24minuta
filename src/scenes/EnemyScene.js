@@ -71,6 +71,13 @@ class EnemyScene extends Phaser.Scene {
         this.table.y = this.game.config.height - 120;
         this.table.setZ(1);
 
+        // Table Step
+        this.step = this.physics.add.image(0, 0, 'step');
+        this.step.setOrigin(1, 1);
+        this.step.x = this.game.config.width - 20;
+        this.step.y = this.game.config.height - 120;
+        this.step.body.immovable = true;
+
         // Input
         this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.spaceBarKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -107,6 +114,8 @@ class EnemyScene extends Phaser.Scene {
         if (this.player.x === this.game.config.width) {
             //this.scene.start('EnemyScene');
         }
+
+        this.physics.collide(this.player, this.step);
     }
 }
 
