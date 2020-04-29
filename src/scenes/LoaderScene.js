@@ -36,7 +36,7 @@ class LoaderScene extends Phaser.Scene {
         this.load.image('table', table);
         this.load.image('step', step);
         this.load.spritesheet('player', player, { frameWidth: 54, frameHeight: 100 });
-        this.load.spritesheet('enemy', enemy, { frameWidth: 38, frameHeight: 118 });
+        this.load.spritesheet('enemy', enemy, { frameWidth: 78, frameHeight: 70 });
         this.load.image('playerJump', playerJump);
         this.load.image('arrow', arrow);
         this.load.image('script', script);
