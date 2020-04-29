@@ -7,6 +7,7 @@ import studio from '../images/studio.png';
 import table from '../images/table.png';
 import step from '../images/step.png';
 import player from '../images/player.png';
+import arrow from '../images/arrow.png';
 import playerJump from '../images/playerJump.png';
 import enemy from '../images/enemy.png';
 import script from '../images/script.png';
@@ -37,6 +38,7 @@ class LoaderScene extends Phaser.Scene {
         this.load.spritesheet('player', player, { frameWidth: 54, frameHeight: 100 });
         this.load.spritesheet('enemy', enemy, { frameWidth: 38, frameHeight: 118 });
         this.load.image('playerJump', playerJump);
+        this.load.image('arrow', arrow);
         this.load.image('script', script);
         this.load.audio('pickup', pickup);
         this.load.audio('jump', jump);
@@ -52,8 +54,8 @@ class LoaderScene extends Phaser.Scene {
         });
 
         this.load.once('complete', () => {
-            setTimeout(() => this.scene.start('SplashScene'), 1000);
-            // this.scene.start('GameScene');
+            // setTimeout(() => this.scene.start('SplashScene'), 1000);
+            this.scene.start('GameScene');
             // this.scene.start('EnemyScene');
         });
     }

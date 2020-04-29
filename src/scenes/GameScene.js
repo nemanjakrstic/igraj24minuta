@@ -8,6 +8,7 @@ class GameScene extends Phaser.Scene {
     constructor() {
         super('GameScene');
         this.playerIsJumping = false;
+        this.score = 0;
     }
 
     create() {
@@ -22,6 +23,20 @@ class GameScene extends Phaser.Scene {
         this.ground.x = 0;
         this.ground.y = this.game.config.height;
         this.ground.body.immovable = true;
+
+        // Arrow
+        this.arrow = this.physics.add.image(770, 420, 'arrow');
+        this.arrow.setScale(3);
+        this.arrow.setVisible(false);
+
+        this.tweens.add({
+            targets: this.arrow,
+            duration: 1000,
+            y: { from: 420, to: 430 },
+            ease: 'sine.inout',
+            repeat: -1,
+            yoyo: true,
+        });
 
         // Scripts
         this.scripts = this.physics.add.group();
@@ -66,8 +81,15 @@ class GameScene extends Phaser.Scene {
         this.spaceBarKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         // Collisions
+        this.physics.add.overlap(this.player, this.arrow, this.handleNextLevel, null, this);
         this.physics.add.overlap(this.player, this.scripts, this.handlePickUpScript, null, this);
         this.physics.add.overlap(this.player, this.ground, this.handlePlayerOnGround, null, this);
+    }
+
+    handleNextLevel() {
+        if (this.arrow.visible) {
+            this.scene.start('EnemyScene');
+        }
     }
 
     setPlayerTexture(key) {
@@ -81,12 +103,18 @@ class GameScene extends Phaser.Scene {
     }
 
     handlePickUpScript(player, script) {
+        this.score++;
         this.sound.play('pickup');
         script.destroy();
+
+        if (this.scripts.getLength() === 0) {
+            this.arrow.setVisible(true);
+        }
     }
 
     update() {
         this.physics.collide(this.player, this.ground);
+        this.physics.collide(this.player, this.arrow);
 
         if (this.playerIsJumping) {
             this.setPlayerTexture('playerJump');
@@ -112,10 +140,6 @@ class GameScene extends Phaser.Scene {
             this.sound.play('jump');
             this.player.anims.stop();
             this.player.setVelocityY(-PLAYER_JUMP_VELOCITY);
-        }
-
-        if (this.player.x === this.game.config.width) {
-            this.scene.start('EnemyScene');
         }
     }
 }
