@@ -72,19 +72,19 @@ class EnemyScene extends Phaser.Scene {
         this.enemy.setGravityY(GRAVITY);
         this.enemy.play('enemy.standing', true);
 
-        // Table
-        this.table = this.add.image(0, 0, 'table');
-        this.table.setOrigin(1, 1);
-        this.table.x = this.game.config.width - 20;
-        this.table.y = this.game.config.height - 120;
-        this.table.setZ(1);
-
         // Table Step
         this.step = this.physics.add.image(0, 0, 'step');
         this.step.setOrigin(1, 1);
         this.step.x = this.game.config.width - 20;
         this.step.y = this.game.config.height - 120;
         this.step.body.immovable = true;
+
+        // Table
+        this.table = this.add.image(0, 0, 'table');
+        this.table.setOrigin(1, 1);
+        this.table.x = this.game.config.width - 20;
+        this.table.y = this.game.config.height - 120;
+        this.table.setZ(1);
 
         // Input
         this.cursorKeys = this.input.keyboard.createCursorKeys();
