@@ -10,6 +10,7 @@ import player from '../images/player.png';
 import script from '../images/script.png';
 import fontSprite from '../fonts/font.png';
 import pickup from '../sounds/pickup.mp3';
+import outro from '../sounds/outro.mp3';
 import theme from '../sounds/theme.mp3';
 import jump from '../sounds/jump.mp3';
 import fontData from '../fonts/font.xml';
@@ -36,6 +37,7 @@ class LoaderScene extends Phaser.Scene {
         this.load.audio('pickup', pickup);
         this.load.audio('jump', jump);
         this.load.audio('theme', theme);
+        this.load.audio('outro', outro);
     }
 
     init() {

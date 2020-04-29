@@ -100,6 +100,8 @@ class EnemyScene extends Phaser.Scene {
         }
 
         if (script === this.lastScript) {
+            this.sound.stopAll();
+            this.sound.play('outro');
             console.log('Game Over!');
         }
     }
