@@ -8,6 +8,7 @@ class EnemyScene extends Phaser.Scene {
     constructor() {
         super('EnemyScene');
         this.score = 0;
+        this.playerIsJumping = false;
     }
 
     create() {
@@ -91,6 +92,8 @@ class EnemyScene extends Phaser.Scene {
 
         // Collisions
         this.physics.add.overlap(this.player, this.script, this.handlePickUpScript, null, this);
+        this.physics.add.overlap(this.player, this.ground, this.handlePlayerOnGround, null, this);
+        this.physics.add.overlap(this.player, this.step, this.handlePlayerOnGround, null, this);
         this.enemyOverlap = this.physics.add.overlap(this.player, this.enemy, this.handleJumpOnEnemy, null, this);
     }
 
@@ -99,6 +102,10 @@ class EnemyScene extends Phaser.Scene {
         this.sound.stopAll();
         this.sound.play('outro');
         console.log('Game Over!');
+    }
+
+    handlePlayerOnGround() {
+        this.playerIsJumping = false;
     }
 
     handleJumpOnEnemy() {
@@ -124,35 +131,35 @@ class EnemyScene extends Phaser.Scene {
     }
 
     update() {
-        const playerOnGround =
-            this.physics.collide(this.player, this.ground) || this.physics.collide(this.player, this.step);
+        this.physics.collide(this.player, this.ground);
+        this.physics.collide(this.player, this.step);
+        this.physics.collide(this.enemy, this.ground);
 
-        if (playerOnGround || Math.round(this.player.body.velocity.y) === 0) {
-            this.setPlayerTexture('player');
-        } else {
+        if (this.playerIsJumping) {
             this.setPlayerTexture('playerJump');
+        } else {
+            this.setPlayerTexture('player');
         }
 
         if (this.cursorKeys.left.isDown) {
             this.player.setVelocityX(-PLAYER_MOVE_VELOCITY);
-            this.player.play('player.walking', true);
+            if (!this.playerIsJumping) this.player.play('player.walking', true);
             this.player.flipX = true;
         } else if (this.cursorKeys.right.isDown) {
             this.player.setVelocityX(PLAYER_MOVE_VELOCITY);
             this.player.flipX = false;
-            this.player.play('player.walking', true);
+            if (!this.playerIsJumping) this.player.play('player.walking', true);
         } else {
             this.player.setVelocityX(0);
-            this.player.play('player.standing', true);
+            if (!this.playerIsJumping) this.player.play('player.standing', true);
         }
 
-        if (playerOnGround && Phaser.Input.Keyboard.JustDown(this.spaceBarKey)) {
+        if (!this.playerIsJumping && Phaser.Input.Keyboard.JustDown(this.spaceBarKey)) {
+            this.playerIsJumping = true;
             this.sound.play('jump');
             this.player.anims.stop();
             this.player.setVelocityY(-PLAYER_JUMP_VELOCITY);
         }
-
-        this.physics.collide(this.enemy, this.ground);
     }
 }
 

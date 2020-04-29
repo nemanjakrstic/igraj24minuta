@@ -7,6 +7,7 @@ const PLAYER_JUMP_VELOCITY = 500;
 class GameScene extends Phaser.Scene {
     constructor() {
         super('GameScene');
+        this.playerIsJumping = false;
     }
 
     create() {
@@ -42,15 +43,23 @@ class GameScene extends Phaser.Scene {
         // Player
         this.anims.create({
             key: 'player.walking',
-            frames: this.anims.generateFrameNames('player'),
+            frames: this.anims.generateFrameNames('player', { start: 2, end: 3 }),
             frameRate: 10,
             repeat: -1,
         });
 
-        this.player = this.physics.add.sprite(50, this.game.config.height - 200, 'player');
+        this.anims.create({
+            key: 'player.standing',
+            frames: this.anims.generateFrameNames('player', { start: 0, end: 1 }),
+            frameRate: 5,
+            repeat: -1,
+        });
+
+        this.player = this.physics.add.sprite(50, this.game.config.height - 120, 'player');
         this.player.setCollideWorldBounds(true);
         this.player.setOrigin(1, 1);
         this.player.setGravityY(GRAVITY);
+        this.player.play('player.standing', true);
 
         // Input
         this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -58,6 +67,17 @@ class GameScene extends Phaser.Scene {
 
         // Collisions
         this.physics.add.overlap(this.player, this.scripts, this.handlePickUpScript, null, this);
+        this.physics.add.overlap(this.player, this.ground, this.handlePlayerOnGround, null, this);
+    }
+
+    setPlayerTexture(key) {
+        if (this.player.texture.key !== key) {
+            this.player.setTexture(key);
+        }
+    }
+
+    handlePlayerOnGround() {
+        this.playerIsJumping = false;
     }
 
     handlePickUpScript(player, script) {
@@ -66,20 +86,29 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
+        this.physics.collide(this.player, this.ground);
+
+        if (this.playerIsJumping) {
+            this.setPlayerTexture('playerJump');
+        } else {
+            this.setPlayerTexture('player');
+        }
+
         if (this.cursorKeys.left.isDown) {
             this.player.setVelocityX(-PLAYER_MOVE_VELOCITY);
-            this.player.play('player.walking', true);
+            if (!this.playerIsJumping) this.player.play('player.walking', true);
             this.player.flipX = true;
         } else if (this.cursorKeys.right.isDown) {
             this.player.setVelocityX(PLAYER_MOVE_VELOCITY);
             this.player.flipX = false;
-            this.player.play('player.walking', true);
+            if (!this.playerIsJumping) this.player.play('player.walking', true);
         } else {
             this.player.setVelocityX(0);
-            this.player.anims.stop();
+            if (!this.playerIsJumping) this.player.play('player.standing', true);
         }
 
-        if (this.physics.collide(this.player, this.ground) && Phaser.Input.Keyboard.JustDown(this.spaceBarKey)) {
+        if (!this.playerIsJumping && Phaser.Input.Keyboard.JustDown(this.spaceBarKey)) {
+            this.playerIsJumping = true;
             this.sound.play('jump');
             this.player.anims.stop();
             this.player.setVelocityY(-PLAYER_JUMP_VELOCITY);
