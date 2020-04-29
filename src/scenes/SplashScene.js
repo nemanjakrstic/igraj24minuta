@@ -39,6 +39,7 @@ class SplashScene extends Phaser.Scene {
         });
 
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        this.sound.play('theme');
     }
 
     update() {

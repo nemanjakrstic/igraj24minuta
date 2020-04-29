@@ -4,9 +4,9 @@ const GRAVITY = 1000;
 const PLAYER_MOVE_VELOCITY = 100;
 const PLAYER_JUMP_VELOCITY = 500;
 
-class GameScene extends Phaser.Scene {
+class EnemyScene extends Phaser.Scene {
     constructor() {
-        super('GameScene');
+        super('EnemyScene');
     }
 
     create() {
@@ -25,15 +25,27 @@ class GameScene extends Phaser.Scene {
         // Scripts
         this.scripts = this.physics.add.group();
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
             const script = this.physics.add.image(200 + i * 200, 300, 'script');
             this.scripts.add(script);
+
+            this.tweens.add({
+                targets: script,
+                duration: 1000,
+                y: { from: 300, to: 310 },
+                ease: 'sine.inout',
+                repeat: -1,
+                yoyo: true,
+            });
         }
 
+        this.lastScript = this.physics.add.image(675, 360, 'script');
+        this.scripts.add(this.lastScript);
+
         this.tweens.add({
-            targets: this.scripts.getChildren(),
+            targets: this.lastScript,
             duration: 1000,
-            y: { from: 300, to: 310 },
+            y: { from: 360, to: 370 },
             ease: 'sine.inout',
             repeat: -1,
             yoyo: true,
@@ -47,10 +59,17 @@ class GameScene extends Phaser.Scene {
             repeat: -1,
         });
 
-        this.player = this.physics.add.sprite(50, this.game.config.height - 200, 'player');
+        this.player = this.physics.add.sprite(50, this.game.config.height - 120, 'player');
         this.player.setCollideWorldBounds(true);
         this.player.setOrigin(1, 1);
         this.player.setGravityY(GRAVITY);
+
+        // Table
+        this.table = this.add.image(0, 0, 'table');
+        this.table.setOrigin(1, 1);
+        this.table.x = this.game.config.width - 20;
+        this.table.y = this.game.config.height - 120;
+        this.table.setZ(1);
 
         // Input
         this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -86,9 +105,9 @@ class GameScene extends Phaser.Scene {
         }
 
         if (this.player.x === this.game.config.width) {
-            this.scene.start('EnemyScene');
+            //this.scene.start('EnemyScene');
         }
     }
 }
 
-export default GameScene;
+export default EnemyScene;

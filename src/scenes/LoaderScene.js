@@ -6,7 +6,11 @@ import ground from '../images/ground.png';
 import studio from '../images/studio.png';
 import table from '../images/table.png';
 import player from '../images/player.png';
+import script from '../images/script.png';
 import fontSprite from '../fonts/font.png';
+import pickup from '../sounds/pickup.mp3';
+import theme from '../sounds/theme.mp3';
+import jump from '../sounds/jump.mp3';
 import fontData from '../fonts/font.xml';
 
 class LoaderScene extends Phaser.Scene {
@@ -26,6 +30,10 @@ class LoaderScene extends Phaser.Scene {
         this.load.image('studio', studio);
         this.load.image('table', table);
         this.load.spritesheet('player', player, { frameWidth: 54, frameHeight: 100 });
+        this.load.image('script', script);
+        this.load.audio('pickup', pickup);
+        this.load.audio('jump', jump);
+        this.load.audio('theme', theme);
     }
 
     init() {
@@ -37,7 +45,8 @@ class LoaderScene extends Phaser.Scene {
 
         this.load.once('complete', () => {
             setTimeout(() => this.scene.start('SplashScene'), 1000);
-            this.scene.start('GameScene');
+            // this.scene.start('GameScene');
+            // this.scene.start('EnemyScene');
         });
     }
 }
