@@ -16,7 +16,7 @@ class SplashScene extends Phaser.Scene {
         this.city.x = 0;
         this.city.y = this.game.config.height;
 
-        // Logo
+        // // Logo
         this.logo = this.add.image(this.game.config.width / 2, this.game.config.height / 3, 'logo');
 
         // Press enter label
@@ -45,7 +45,7 @@ class SplashScene extends Phaser.Scene {
         this.city.tilePositionX += 0.2;
 
         if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
-            console.log('Start');
+            this.scene.start('GameScene');
         }
     }
 }
