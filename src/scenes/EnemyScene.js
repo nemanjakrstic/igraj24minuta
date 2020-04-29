@@ -7,6 +7,7 @@ const PLAYER_JUMP_VELOCITY = 500;
 class EnemyScene extends Phaser.Scene {
     constructor() {
         super('EnemyScene');
+        this.score = 0;
     }
 
     create() {
@@ -41,6 +42,7 @@ class EnemyScene extends Phaser.Scene {
 
         this.lastScript = this.physics.add.image(675, 360, 'script');
         this.scripts.add(this.lastScript);
+        this.lastScript.setVisible(false);
 
         this.tweens.add({
             targets: this.lastScript,
@@ -87,8 +89,19 @@ class EnemyScene extends Phaser.Scene {
     }
 
     handlePickUpScript(player, script) {
-        this.sound.play('pickup');
-        script.destroy();
+        if (script.visible) {
+            this.sound.play('pickup');
+            this.score++;
+            script.destroy();
+        }
+
+        if (this.score >= 2) {
+            this.lastScript.setVisible(true);
+        }
+
+        if (script === this.lastScript) {
+            console.log('Game Over!');
+        }
     }
 
     update() {
