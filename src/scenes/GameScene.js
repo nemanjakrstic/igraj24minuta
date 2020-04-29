@@ -12,9 +12,11 @@ class GameScene extends Phaser.Scene {
 
         // Ground
         this.ground = this.add.tileSprite(0, 0, this.game.config.width, 120, 'ground');
+        this.physics.add.existing(this.ground);
         this.ground.setOrigin(0, 1);
         this.ground.x = 0;
         this.ground.y = this.game.config.height;
+        this.ground.body.immovable = true;
 
         this.anims.create({
             key: 'player.walking',
@@ -23,7 +25,7 @@ class GameScene extends Phaser.Scene {
             repeat: -1,
         });
 
-        this.player = this.physics.add.sprite(this.game.config.width / 2 - 50, this.game.config.height / 2, 'player');
+        this.player = this.physics.add.sprite(50, this.game.config.height - 200, 'player');
         this.player.setCollideWorldBounds(true);
         this.player.setOrigin(0, 1);
         // this.player.play('player.walking');
@@ -31,26 +33,26 @@ class GameScene extends Phaser.Scene {
         this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.spaceBarKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.player.setGravityY(300);
-
-        this.physics.collide(this.player, this.ground);
+        this.player.setGravityY(500);
     }
 
     update() {
         if (this.cursorKeys.left.isDown) {
             this.player.setVelocityX(-100);
             this.player.play('player.walking', true);
+            this.player.flipX = true;
         } else if (this.cursorKeys.right.isDown) {
             this.player.setVelocityX(100);
+            this.player.flipX = false;
             this.player.play('player.walking', true);
         } else {
             this.player.setVelocityX(0);
             this.player.anims.stop();
         }
 
-        if (this.player.y === this.game.config.height && Phaser.Input.Keyboard.JustDown(this.spaceBarKey)) {
+        if (this.physics.collide(this.player, this.ground) && Phaser.Input.Keyboard.JustDown(this.spaceBarKey)) {
             this.player.anims.stop();
-            this.player.setVelocityY(-300);
+            this.player.setVelocityY(-400);
         }
     }
 }
