@@ -46,9 +46,9 @@ class LoaderScene extends Phaser.Scene {
         });
 
         this.load.once('complete', () => {
-            // setTimeout(() => this.scene.start('SplashScene'), 1000);
+            setTimeout(() => this.scene.start('SplashScene'), 1000);
             // this.scene.start('GameScene');
-            this.scene.start('EnemyScene');
+            // this.scene.start('EnemyScene');
         });
     }
 }
