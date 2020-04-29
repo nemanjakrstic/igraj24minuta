@@ -23,29 +23,12 @@ class EnemyScene extends Phaser.Scene {
         this.ground.y = this.game.config.height;
         this.ground.body.immovable = true;
 
-        // Scripts
-        this.scripts = this.physics.add.group();
-
-        for (let i = 0; i < 2; i++) {
-            const script = this.physics.add.image(200 + i * 200, 300, 'script');
-            this.scripts.add(script);
-
-            this.tweens.add({
-                targets: script,
-                duration: 1000,
-                y: { from: 300, to: 310 },
-                ease: 'sine.inout',
-                repeat: -1,
-                yoyo: true,
-            });
-        }
-
-        this.lastScript = this.physics.add.image(675, 360, 'script');
-        this.scripts.add(this.lastScript);
-        this.lastScript.setVisible(false);
+        // Script
+        this.script = this.physics.add.image(675, 360, 'script');
+        this.script.setVisible(false);
 
         this.tweens.add({
-            targets: this.lastScript,
+            targets: this.script,
             duration: 1000,
             y: { from: 360, to: 370 },
             ease: 'sine.inout',
@@ -56,8 +39,15 @@ class EnemyScene extends Phaser.Scene {
         // Player
         this.anims.create({
             key: 'player.walking',
-            frames: this.anims.generateFrameNames('player'),
+            frames: this.anims.generateFrameNames('player', { start: 2, end: 3 }),
             frameRate: 10,
+            repeat: -1,
+        });
+
+        this.anims.create({
+            key: 'player.standing',
+            frames: this.anims.generateFrameNames('player', { start: 0, end: 1 }),
+            frameRate: 5,
             repeat: -1,
         });
 
@@ -65,6 +55,21 @@ class EnemyScene extends Phaser.Scene {
         this.player.setCollideWorldBounds(true);
         this.player.setOrigin(1, 1);
         this.player.setGravityY(GRAVITY);
+        this.player.play('player.standing', true);
+
+        // Enemy
+        this.anims.create({
+            key: 'enemy.standing',
+            frames: this.anims.generateFrameNames('enemy'),
+            frameRate: 5,
+            repeat: -1,
+        });
+
+        this.enemy = this.physics.add.sprite(400, this.game.config.height - 120, 'enemy');
+        this.enemy.setCollideWorldBounds(true);
+        this.enemy.setOrigin(1, 1);
+        this.enemy.setGravityY(GRAVITY);
+        this.enemy.play('enemy.standing', true);
 
         // Table
         this.table = this.add.image(0, 0, 'table');
@@ -85,28 +90,49 @@ class EnemyScene extends Phaser.Scene {
         this.spaceBarKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         // Collisions
-        this.physics.add.overlap(this.player, this.scripts, this.handlePickUpScript, null, this);
+        this.physics.add.overlap(this.player, this.script, this.handlePickUpScript, null, this);
+        this.enemyOverlap = this.physics.add.overlap(this.player, this.enemy, this.handleJumpOnEnemy, null, this);
     }
 
     handlePickUpScript(player, script) {
-        if (script.visible) {
-            this.sound.play('pickup');
-            this.score++;
-            script.destroy();
-        }
+        script.destroy();
+        this.sound.stopAll();
+        this.sound.play('outro');
+        console.log('Game Over!');
+    }
 
-        if (this.score >= 2) {
-            this.lastScript.setVisible(true);
-        }
+    handleJumpOnEnemy() {
+        this.sound.play('pickup');
+        this.script.setVisible(true);
+        this.enemyOverlap.destroy();
+        this.enemy.setCollideWorldBounds(false);
 
-        if (script === this.lastScript) {
-            this.sound.stopAll();
-            this.sound.play('outro');
-            console.log('Game Over!');
+        this.tweens.add({
+            targets: this.enemy,
+            duration: 1000,
+            y: { from: this.enemy.y, to: this.game.config.height + this.enemy.height },
+            ease: 'sine.inout',
+            repeat: 0,
+            onComplete: () => this.enemy.destroy(),
+        });
+    }
+
+    setPlayerTexture(key) {
+        if (this.player.texture.key !== key) {
+            this.player.setTexture(key);
         }
     }
 
     update() {
+        const playerOnGround =
+            this.physics.collide(this.player, this.ground) || this.physics.collide(this.player, this.step);
+
+        if (playerOnGround || Math.round(this.player.body.velocity.y) === 0) {
+            this.setPlayerTexture('player');
+        } else {
+            this.setPlayerTexture('playerJump');
+        }
+
         if (this.cursorKeys.left.isDown) {
             this.player.setVelocityX(-PLAYER_MOVE_VELOCITY);
             this.player.play('player.walking', true);
@@ -117,20 +143,16 @@ class EnemyScene extends Phaser.Scene {
             this.player.play('player.walking', true);
         } else {
             this.player.setVelocityX(0);
-            this.player.anims.stop();
+            this.player.play('player.standing', true);
         }
 
-        if (this.physics.collide(this.player, this.ground) && Phaser.Input.Keyboard.JustDown(this.spaceBarKey)) {
+        if (playerOnGround && Phaser.Input.Keyboard.JustDown(this.spaceBarKey)) {
             this.sound.play('jump');
             this.player.anims.stop();
             this.player.setVelocityY(-PLAYER_JUMP_VELOCITY);
         }
 
-        if (this.player.x === this.game.config.width) {
-            //this.scene.start('EnemyScene');
-        }
-
-        this.physics.collide(this.player, this.step);
+        this.physics.collide(this.enemy, this.ground);
     }
 }
 

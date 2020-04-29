@@ -7,6 +7,8 @@ import studio from '../images/studio.png';
 import table from '../images/table.png';
 import step from '../images/step.png';
 import player from '../images/player.png';
+import playerJump from '../images/playerJump.png';
+import enemy from '../images/enemy.png';
 import script from '../images/script.png';
 import fontSprite from '../fonts/font.png';
 import pickup from '../sounds/pickup.mp3';
@@ -33,6 +35,8 @@ class LoaderScene extends Phaser.Scene {
         this.load.image('table', table);
         this.load.image('step', step);
         this.load.spritesheet('player', player, { frameWidth: 54, frameHeight: 100 });
+        this.load.spritesheet('enemy', enemy, { frameWidth: 38, frameHeight: 118 });
+        this.load.image('playerJump', playerJump);
         this.load.image('script', script);
         this.load.audio('pickup', pickup);
         this.load.audio('jump', jump);
